@@ -6,7 +6,7 @@ socket.emit( "change-room", room );
 socket.emit( "change-user", user );
 
 socket.on( "chat", function( data ) {
-	$( "#chat-list" ).append( $( "<li>" ).text( data[1] + ": " + data[2] ) );
+	$( "#chat-list" ).append( $( "<li>" ).append( $( "<b>" ).text( data[0] ), ": ", $( "<span />" ).text( data[1] ) ) );
 } );
 
 $( document ).ready( function() {
@@ -25,8 +25,8 @@ $( document ).ready( function() {
 	
 	$( "#chat-entry" ).keyup( function( ev ) {
 		if( ev.keyCode == 13 ) {
-			socket.emit( "chat", $( this ).val() );
-			$( "#chat-list" ).append( $( "<li>" ).text( user + ": " + $( this ).val() ) );
+			socket.emit( "chat", $( this ).val() ); // .text( ": " + $( this ).val() )
+			$( "#chat-list" ).append( $( "<li>" ).append( $( "<b>" ).text( user ), ": ", $( "<span />" ).text( $( this ).val() ) ) );
 			$( this ).val( "" );
 		}
 	} );
