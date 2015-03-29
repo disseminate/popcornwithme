@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>popcornwith.me</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="https://cdn.socket.io/socket.io-1.3.4.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="client.js" type="text/javascript"></script>
+</head>
+<body>
+<header>
+	<h1>popcornwith.me</h1>
+	<form action="" id="room-entry">
+		<button id="room-entry-submit">Enter</button>
+		<input id="room-entry-entry" />
+	</form>
+</header>
+<div id="container">
+	<h1 id="room-name"></h1>
+	<div id="content-container">
+		<div id="video-column">
+			<div id="video">Video</div>
+			<input id="video-url" />
+			<button id="video-url-submit" />Go</button>
+		</div>
+		<div id="chat-column">
+			<div id="chat">
+				<ul id="chat-list">
+					
+				</ul>
+			</div>
+			<input id="chat-entry" />
+		</div>
+	</div>
+</div>
+</body>
+</html>
