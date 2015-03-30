@@ -5,33 +5,87 @@ var user = "Guest " + Math.floor( Math.random() * 10000 );
 socket.emit( "change-room", room );
 socket.emit( "change-user", user );
 
-socket.on( "chat", function( data ) {
-	$( "#chat-list" ).append( $( "<li>" ).append( $( "<b>" ).text( data[0] ), ": ", $( "<span />" ).text( data[1] ) ) );
-} );
-
 var player;
 
-var playerURLs = { };
-var playerTimes = { };
+var playerURL;
+var playerTime;
 
-function onYouTubeIframeAPIReady() {
-	if( player == null ) {
-		player = new YT.Player( "video", {
-			height: '480',
-			width: '848',
-			videoId: 'N1uiLR6luWo',
-			events: {
-				"onReady": playVid
-			}
-		} );
-	}
-}
-
-function playVid( ev ) {
-	ev.target.playVideo();
-}
+var timeCounter;
 
 $( document ).ready( function() {
+	function clearPlayerDiv() {
+		$( "#video-src" ).remove();
+		$( "#video" ).append( "<div id=\"video-src\"></div>" );
+		player = null;
+	}
+	
+	socket.on( "stop-video", function( data ) {
+		clearPlayerDiv();
+	} );
+	
+	socket.on( "chat", function( data ) {
+		$( "#chat-list" ).append( $( "<li>" ).append( $( "<b>" ).text( data[0] ), ": ", $( "<span />" ).text( data[1] ) ) );
+		$( "#chat" ).scrollTop( $( "#chat" ).prop( "scrollHeight" ) );
+	} );
+	
+	socket.on( "chat-users", function( data ) {
+		$( "#chat-users-list" ).empty();
+		for( var i in data ) {
+			$( "#chat-users-list" ).append( $( "<li>" ).text( data[i] ) );
+		}
+	} );
+	
+	socket.on( "request-users", function( data ) {
+		socket.emit( "request-users" );
+	} );
+	
+	socket.on( "update-time", function( data ) {
+		if( player != null && data < player.getDuration() ) {
+			var diff = data - player.getCurrentTime();
+			if( diff < 0 ) {
+				diff *= -1;
+			}
+			
+			if( diff > 2 ) {
+				player.seekTo( data );
+			}
+		}
+	} );
+	
+	socket.on( "play-video", function( data ) {
+		playerURL = data[0];
+		playerTime = data[1];
+		
+		console.log( "Changing video to \"" + playerURL + "\"" );
+		
+		if( player == null ) {
+			console.log( "New Player" );
+			player = new YT.Player( "video-src", {
+				height: '480',
+				width: '848',
+				videoId: playerURL,
+				playerVars: {
+					disablekb: 1,
+					modestbranding: 1,
+					autoplay: 1,
+					start: playerTime
+				},
+				events: {
+					"onStateChange": onStateChange
+				}
+			} );
+			
+			function onStateChange( ev, data ) {
+				if( data == 2 ) {
+					player.playVideo();
+				}
+			}
+		} else {
+			console.log( "Old Player" );
+			player.loadVideoById( playerURL, playerTime, "large" );
+		}
+	} );
+	
 	$( "#room-entry-entry" ).val( room );
 	$( "#room-name" ).text( room );
 	$( "#chat-name" ).val( user );
@@ -42,6 +96,7 @@ $( document ).ready( function() {
 		
 		$( "#room-name" ).text( room );
 		$( "#chat-list" ).empty();
+		$( "#chat-users-list" ).empty();
 		
 		ev.preventDefault();
 	} );

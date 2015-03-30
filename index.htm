@@ -17,21 +17,33 @@
 	</form>
 </header>
 <div id="container">
-	<h1 id="room-name"></h1>
 	<div id="content-container">
 		<div id="video-column">
-			<div id="video"></div>
+			<h1 id="room-name"></h1>
+			<div id="video"><div id="video-src"></div></div>
 			<input id="video-url" />
 			<button id="video-url-submit" />Go</button>
 		</div>
-		<div id="chat-column">
-			<div id="chat">
-				<ul id="chat-list">
-					
-				</ul>
+		<div id="side-content">
+			<div id="users-column">
+				<h1 class="20-left">Users</h1>
+				<div id="users">
+					<ul id="chat-users-list" class="noFormat">
+						
+					</ul>
+				</div>
+				<input id="chat-name" /><br>
+				<button id="chat-name-submit">Change Name</button>
 			</div>
-			<input id="chat-entry" /><br>
-			<input id="chat-name" /><button id="chat-name-submit">Change Name</button>
+			<div id="chat-column">
+				<h1 class="20-left">Chat</h1>
+				<div id="chat">
+					<ul id="chat-list" class="noFormat">
+						
+					</ul>
+				</div>
+				<input id="chat-entry" />
+			</div>
 		</div>
 	</div>
 </div>
