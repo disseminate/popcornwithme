@@ -1,6 +1,7 @@
 var app = require( "express" )();
 var http = require( "http" ).Server( app );
 var io = require( "socket.io" )( http );
+var colors = require( "colors" );
 
 app.get( "/", function( req, res ) {
 	res.sendFile( __dirname + "/index.htm" );
@@ -13,7 +14,7 @@ app.get( "/client.js", function( req, res ) {
 } );
 
 http.listen( 80, function() {
-	console.log( "popcornwith.me initialized." );
+	console.log( "popcornwith.me initialized.".green.bold );
 } );
 
 var playerURLs = { };
@@ -46,6 +47,8 @@ function getIdFromVideo( video ) {
 io.on( "connection", function( socket ) {
 	socket.chatName = "Guest " + Math.floor( Math.random() * 10000 );
 	socket.room = "";
+	
+	console.log( ( socket.chatName + " connected." ).yellow );
 	
 	function getClientsInRoom() {
 		var ret = [];
@@ -82,6 +85,8 @@ io.on( "connection", function( socket ) {
 			socket.join( data );
 			socket.room = data;
 			
+			console.log( socket.chatName.yellow + " joined room \"" + data.yellow + "\"." );
+			
 			for( var i = 0; i < socket.rooms.length; i++ ) {
 				updateUsers();
 			}
@@ -98,6 +103,8 @@ io.on( "connection", function( socket ) {
 		if( data.length > 0 ) {
 			var id = getIdFromVideo( data );
 			
+			console.log( socket.chatName.yellow + " changed the video for room \"" + socket.room.yellow + "\" to " + id.yellow + "." );
+			
 			for( var i = 0; i < socket.rooms.length; i++ ) {
 				io.to( socket.rooms[i] ).emit( "play-video", [ id, 0 ] );
 				playerURLs[socket.rooms[i]] = id;
@@ -108,6 +115,7 @@ io.on( "connection", function( socket ) {
 	
 	socket.on( "change-user", function( data ) {
 		if( data.length > 0 ) {
+			console.log( socket.chatName.yellow + " changed their name to " + data.yellow + "." );
 			socket.chatName = data;
 		}
 		updateUsers();
@@ -115,7 +123,7 @@ io.on( "connection", function( socket ) {
 	
 	socket.on( "chat", function( data ) {
 		if( data.length > 0 ) {
-			console.log( socket.chatName + ": " + data );
+			console.log( ( "[" + socket.room + "] " + socket.chatName + ": " + data ).gray );
 			for( var i = 0; i < socket.rooms.length; i++ ) {
 				socket.broadcast.to( socket.rooms[i] ).emit( "chat", [ socket.chatName, data ] );
 			}
