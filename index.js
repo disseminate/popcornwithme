@@ -62,6 +62,13 @@ function getIdFromVideo( video, type ) {
 			return id;
 		}
 		return video;
+	} else if( type == 4 ) {
+		var idtab = video.split( "twitch.tv/" );
+		var id = idtab[1];
+		if( id ) {
+			return id;
+		}
+		return video;
 	}
 }
 
@@ -72,6 +79,8 @@ function getServiceFromVideo( video ) {
 		return 2;
 	} else if( video.indexOf( "vimeo." ) != -1 ) {
 		return 3;
+	} else if( video.indexOf( "twitch.tv" ) != -1 ) {
+		return 4;
 	}
 	return 0;
 }

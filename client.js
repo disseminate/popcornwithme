@@ -38,6 +38,10 @@ $( document ).ready( function() {
 			$( "#video-src" ).remove();
 			$( "#video" ).append( "<div id=\"video-src\"></div>" );
 			player = null;
+		} else if( playerService == 3 ) {
+			$( "#video-src" ).remove();
+			$( "#video" ).append( "<div id=\"video-src\"></div>" );
+			player = null;
 		}
 	}
 	
@@ -195,6 +199,10 @@ $( document ).ready( function() {
 			$( "#video-src" ).remove();
 			$( "#video" ).append( "<iframe id='video-src' src='https://player.vimeo.com/video/" + playerURL + "/?api=1&player_id=video-src' width='848' height='480' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>" );
 			player = $( "#video-src" );
+		} else if( playerService == 3 ) {
+			$( "#video-src" ).remove();
+			$( "#video" ).append( "<iframe id='video-src' width='848' height='480' frameborder='0' scrolling='no' src='http://www.twitch.tv/" + playerURL + "/embed'></iframe>" );
+			player = $( "#video-src" );
 		}
 	} );
 	
@@ -213,7 +221,7 @@ $( document ).ready( function() {
 		ev.preventDefault();
 	} );
 	
-	$( "#video-url" ).keyup( function( ev ) {
+	$( "#video-url" ).keydown( function( ev ) {
 		if( ev.keyCode == 13 ) {
 			if( $( "#video-url" ).val().length > 0 ) {
 				socket.emit( "change-video", $( "#video-url" ).val() );
@@ -227,7 +235,7 @@ $( document ).ready( function() {
 		}
 	} );
 	
-	$( "#chat-entry" ).keyup( function( ev ) {
+	$( "#chat-entry" ).keydown( function( ev ) {
 		if( ev.keyCode == 13 ) {
 			var a = $( this ).val();
 			if( a.length > 0 ) {
@@ -244,7 +252,7 @@ $( document ).ready( function() {
 		$( "#chat-entry" ).width( $( "#chat" ).width() + 40 );
 	} );
 	
-	$( "#chat-name" ).keyup( function( ev ) {
+	$( "#chat-name" ).keydown( function( ev ) {
 		if( ev.keyCode == 13 && $( this ).val().length > 0 ) {
 			user = $( this ).val();
 			socket.emit( "change-user", user );
