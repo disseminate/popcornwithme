@@ -2,21 +2,43 @@ var socket = io();
 
 var room = "room-" + Math.floor( Math.random() * 32768 );
 var user = "Guest " + Math.floor( Math.random() * 10000 );
-socket.emit( "change-room", room );
-socket.emit( "change-user", user );
 
 var player;
 
+var playerService;
 var playerURL;
 var playerTime;
+
+var serverTime;
 
 var timeCounter;
 
 $( document ).ready( function() {
+	var s = document.URL.split( "/" );
+	if( s.length >= 3 ) {
+		if( s[3].length > 0 ) {
+			room = s[3];
+		}
+	}
+	
+	socket.emit( "change-room", room );
+	socket.emit( "change-user", user );
+	
 	function clearPlayerDiv() {
-		$( "#video-src" ).remove();
-		$( "#video" ).append( "<div id=\"video-src\"></div>" );
-		player = null;
+		window.removeEventListener( 'message', onVimeoMessage, false );
+		if( playerService == 1 ) {
+			$( "#video-src" ).remove();
+			$( "#video" ).append( "<div id=\"video-src\"></div>" );
+			player = null;
+		} else if( playerService == 2 ) {
+			$( "#video-src" ).remove();
+			$( "#video" ).append( "<div id=\"video-src\"></div>" );
+			player = null;
+		} else if( playerService == 3 ) {
+			$( "#video-src" ).remove();
+			$( "#video" ).append( "<div id=\"video-src\"></div>" );
+			player = null;
+		}
 	}
 	
 	socket.on( "stop-video", function( data ) {
@@ -39,50 +61,140 @@ $( document ).ready( function() {
 		socket.emit( "request-users" );
 	} );
 	
-	socket.on( "update-time", function( data ) {
-		if( player != null && data < player.getDuration() ) {
-			var diff = data - player.getCurrentTime();
-			if( diff < 0 ) {
-				diff *= -1;
+	function vimeoPost( action, value ) {
+		if( player ) {
+			var url = player.attr( 'src' ).split( '?' )[0];
+			var data = { method: action };
+			
+			if( value ) {
+				data.value = value;
 			}
 			
-			if( diff > 2 ) {
-				player.seekTo( data );
+			var message = JSON.stringify( data );
+			player[0].contentWindow.postMessage( data, url );
+		}
+	}
+
+	function onVimeoMessage( e ) {
+		if( player ) {
+			var data = JSON.parse( e.data );
+			
+			if( data.event == "ready" ) {
+				vimeoPost( "seekTo", playerTime );
+				vimeoPost( "play" );
+			} else if( data.method == "getCurrentTime" ) {
+				if( player != null ) {
+					var diff = serverTime - data.value;
+					if( diff < 0 ) {
+						diff *= -1;
+					}
+					
+					if( diff > 2 ) {
+						vimeoPost( "seekTo", serverTime );
+					}
+				}
+			}
+		}
+	}
+	window.addEventListener( 'message', onVimeoMessage, false );
+	
+	socket.on( "update-time", function( data ) {
+		serverTime = data;
+		if( playerService == 1 ) {
+			if( player != null && data < player.getDuration() ) {
+				var diff = data - player.getCurrentTime();
+				if( diff < 0 ) {
+					diff *= -1;
+				}
+				
+				if( diff > 2 ) {
+					player.seekTo( data );
+				}
+			}
+		} else if( playerService == 2 ) {
+			if( player != null ) {
+				player.getDuration( function( duration ) {
+					if( player != null && data < duration ) {
+						player.getPosition( function( pos ) {
+							if( player != null ) {
+								var diff = data - ( pos / 1000 );
+								if( diff < 0 ) {
+									diff *= -1;
+								}
+								
+								if( diff > 2 ) {
+									player.seekTo( data * 1000 );
+								}
+							}
+						} );
+					}
+				} );
+			}
+		} else if( playerService == 3 ) {
+			if( player != null ) {
+				vimeoPost( "getCurrentTime" );
 			}
 		}
 	} );
 	
 	socket.on( "play-video", function( data ) {
+		clearPlayerDiv();
+		
 		playerURL = data[0];
 		playerTime = data[1];
+		playerService = data[2];
 		
-		console.log( "Changing video to \"" + playerURL + "\"" );
+		console.log( "Changing video to \"" + playerURL + "\" [" + playerService + "]" );
 		
-		if( player == null ) {
-			console.log( "New Player" );
-			player = new YT.Player( "video-src", {
-				height: '480',
-				width: '848',
-				videoId: playerURL,
-				playerVars: {
-					disablekb: 1,
-					modestbranding: 1,
-					autoplay: 1,
-					start: playerTime
-				},
-				events: {
-					"onStateChange": onStateChange
+		if( playerService == 1 ) {
+			if( player == null ) {
+				console.log( "New Player" );
+				player = new YT.Player( "video-src", {
+					height: '480',
+					width: '848',
+					videoId: playerURL,
+					playerVars: {
+						disablekb: 1,
+						modestbranding: 1,
+						autoplay: 1,
+						start: playerTime
+					},
+					events: {
+						"onStateChange": onStateChange
+					}
+				} );
+				
+				function onStateChange( ev, data ) {
+					if( data == 2 ) {
+						player.playVideo();
+					}
 				}
-			} );
-			
-			function onStateChange( ev, data ) {
-				if( data == 2 ) {
-					player.playVideo();
-				}
+			} else {
+				console.log( "Old Player" );
+				player.loadVideoById( playerURL, playerTime, "large" );
 			}
-		} else {
-			console.log( "Old Player" );
-			player.loadVideoById( playerURL, playerTime, "large" );
+		} else if( playerService == 2 ) {
+			if( player == null ) {
+				$( "#video-src" ).remove();
+				$( "#video" ).append( "<iframe id=\"video-src\" width=\"848\" height=\"480\" frameborder=\"no\" scrolling=\"no\" src=\"https://w.soundcloud.com/player/?url=" + playerURL + "\"></iframe>" );
+				player = new SC.Widget( "video-src" );
+			}
+			player.load( playerURL, {
+				auto_play: true,
+				buying: false,
+				liking: false,
+				download: false,
+				sharing: false,
+				show_comments: false
+			} );
+			player.bind( SC.Widget.Events.READY, function() {
+				player.seekTo( playerTime * 1000 );
+				player.play();
+			} );
+		} else if( playerService == 3 ) {
+			$( "#video-src" ).remove();
+			$( "#video" ).append( "<iframe id='video-src' src='https://player.vimeo.com/video/" + playerURL + "/?api=1&player_id=video-src' width='848' height='480' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>" );
+			player = $( "#video-src" );
 		}
 	} );
 	
@@ -99,6 +211,14 @@ $( document ).ready( function() {
 		$( "#chat-users-list" ).empty();
 		
 		ev.preventDefault();
+	} );
+	
+	$( "#video-url" ).keyup( function( ev ) {
+		if( ev.keyCode == 13 ) {
+			if( $( "#video-url" ).val().length > 0 ) {
+				socket.emit( "change-video", $( "#video-url" ).val() );
+			}
+		}
 	} );
 	
 	$( "#video-url-submit" ).click( function() {

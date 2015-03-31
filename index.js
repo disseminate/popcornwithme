@@ -12,6 +12,15 @@ app.get( "/style.css", function( req, res ) {
 app.get( "/client.js", function( req, res ) {
 	res.sendFile( __dirname + "/client.js" );
 } );
+app.get( "/*/style.css", function( req, res ) {
+	res.sendFile( __dirname + "/style.css" );
+} );
+app.get( "/*/client.js", function( req, res ) {
+	res.sendFile( __dirname + "/client.js" );
+} );
+app.get( "/*", function( req, res ) {
+	res.sendFile( __dirname + "/index.htm" );
+} );
 
 http.listen( 80, function() {
 	console.log( "popcornwith.me initialized.".green.bold );
@@ -19,6 +28,7 @@ http.listen( 80, function() {
 
 var playerURLs = { };
 var playerTimes = { };
+var playerServices = { };
 
 setInterval( function() {
 	for( var i in playerTimes ) {
@@ -27,21 +37,59 @@ setInterval( function() {
 	}
 }, 1000 );
 
-function getIdFromVideo( video ) {
-	var id = video.split( "v=" )[1];
-	if( id != null ) {
-		var aP = id.indexOf( "&" );
-		if( aP != -1 ) {
-			id = id.substring( 0, aP );
+function getIdFromVideo( video, type ) {
+	if( type == 1 ) {
+		var id = video.split( "v=" )[1];
+		if( id != null ) {
+			var aP = id.indexOf( "&" );
+			if( aP != -1 ) {
+				id = id.substring( 0, aP );
+			}
+			aP = id.indexOf( "#" );
+			if( aP != -1 ) {
+				id = id.substring( 0, aP );
+			}
+			return id;
 		}
-		aP = id.indexOf( "#" );
-		if( aP != -1 ) {
-			id = id.substring( 0, aP );
+		
+		return video;
+	} else if( type == 2 ) {
+		return video;
+	} else if( type == 3 ) {
+		var idtab = video.split( "/" );
+		var id = idtab[idtab.length - 1];
+		if( id ) {
+			return id;
 		}
-		return id;
+		return video;
+	}
+}
+
+function getServiceFromVideo( video ) {
+	if( video.indexOf( "youtube." ) != -1 ) {
+		return 1;
+	} else if( video.indexOf( "soundcloud." ) != -1 ) {
+		return 2;
+	} else if( video.indexOf( "vimeo." ) != -1 ) {
+		return 3;
+	}
+	return 0;
+}
+
+function getClientsInRoom( room ) {
+	var ret = [];
+	var ns = io.of( "/" );
+	
+	if( ns ) {
+		for( var id in ns.connected ) {
+			var i = ns.connected[id].rooms.indexOf( room );
+			if( i !== -1 ) {
+				ret.push( ns.connected[id].chatName );
+			}
+		}
 	}
 	
-	return video;
+	return ret;
 }
 
 io.on( "connection", function( socket ) {
@@ -50,24 +98,12 @@ io.on( "connection", function( socket ) {
 	
 	console.log( ( socket.chatName + " connected." ).yellow );
 	
-	function getClientsInRoom() {
-		var ret = [];
-		var ns = io.of( "/" );
-		
-		if( ns ) {
-			for( var id in ns.connected ) {
-				var i = ns.connected[id].rooms.indexOf( socket.rooms[0] );
-				if( i !== -1 ) {
-					ret.push( ns.connected[id].chatName );
-				}
-			}
-		}
-		
-		return ret;
+	function getClientsInMyRoom() {
+		return getClientsInRoom( socket.rooms[0] );
 	}
 	
 	function updateUsers() { // Update all users in my current room
-		var users = getClientsInRoom( socket.room );
+		var users = getClientsInMyRoom();
 		io.to( socket.room ).emit( "chat-users", users );
 	}
 	
@@ -92,7 +128,7 @@ io.on( "connection", function( socket ) {
 			}
 			
 			if( playerURLs[socket.room] != null ) {
-				socket.emit( "play-video", [ playerURLs[socket.room], playerTimes[socket.room] ] );
+				socket.emit( "play-video", [ playerURLs[socket.room], playerTimes[socket.room], playerServices[socket.room] ] );
 			} else {
 				socket.emit( "stop-video" );
 			}
@@ -101,14 +137,16 @@ io.on( "connection", function( socket ) {
 	
 	socket.on( "change-video", function( data ) {
 		if( data.length > 0 ) {
-			var id = getIdFromVideo( data );
+			var type = getServiceFromVideo( data );
+			var id = getIdFromVideo( data, type );
 			
 			console.log( socket.chatName.yellow + " changed the video for room \"" + socket.room.yellow + "\" to " + id.yellow + "." );
 			
 			for( var i = 0; i < socket.rooms.length; i++ ) {
-				io.to( socket.rooms[i] ).emit( "play-video", [ id, 0 ] );
+				io.to( socket.rooms[i] ).emit( "play-video", [ id, 0, type ] );
 				playerURLs[socket.rooms[i]] = id;
 				playerTimes[socket.rooms[i]] = 0;
+				playerServices[socket.rooms[i]] = type;
 			}
 		}
 	} );
