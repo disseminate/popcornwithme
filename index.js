@@ -125,16 +125,14 @@ io.on( "connection", function( socket ) {
 			for( var i = 0; i < socket.rooms.length; i++ ) {
 				var r = socket.rooms[i];
 				socket.leave( r );
-				socket.broadcast.to( r ).emit( "request-users" );
+				io.to( socket.room ).emit( "chat-users", getClientsInRoom( r ) );
 			}
 			socket.join( data );
 			socket.room = data;
 			
-			console.log( socket.chatName.yellow + " joined room \"" + data.yellow + "\"." );
+			console.log( socket.chatName.red + " joined room \"" + data.red + "\"." );
 			
-			for( var i = 0; i < socket.rooms.length; i++ ) {
-				updateUsers();
-			}
+			io.to( socket.room ).emit( "chat-users", getClientsInRoom( socket.rooms[0] ) );
 			
 			if( playerURLs[socket.room] != null ) {
 				socket.emit( "play-video", [ playerURLs[socket.room], playerTimes[socket.room], playerServices[socket.room] ] );
@@ -149,7 +147,7 @@ io.on( "connection", function( socket ) {
 			var type = getServiceFromVideo( data );
 			var id = getIdFromVideo( data, type );
 			
-			console.log( socket.chatName.yellow + " changed the video for room \"" + socket.room.yellow + "\" to " + id.yellow + "." );
+			console.log( socket.chatName.red + " changed the video for room \"" + socket.room.red + "\" to " + id.red + "." );
 			
 			for( var i = 0; i < socket.rooms.length; i++ ) {
 				io.to( socket.rooms[i] ).emit( "play-video", [ id, 0, type ] );
@@ -162,7 +160,7 @@ io.on( "connection", function( socket ) {
 	
 	socket.on( "change-user", function( data ) {
 		if( data.length > 0 ) {
-			console.log( socket.chatName.yellow + " changed their name to " + data.yellow + "." );
+			console.log( socket.chatName.red + " changed their name to " + data.red + "." );
 			socket.chatName = data;
 		}
 		updateUsers();

@@ -24,6 +24,8 @@ $( document ).ready( function() {
 	socket.emit( "change-room", room );
 	socket.emit( "change-user", user );
 	
+	socket.emit( "request-users" );
+	
 	function clearPlayerDiv() {
 		window.removeEventListener( 'message', onVimeoMessage, false );
 		if( playerService == 1 ) {
