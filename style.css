@@ -1,10 +1,10 @@
-@import url( "http://fonts.googleapis.com/css?family=Roboto:400,700" );
+@import url( "http://fonts.googleapis.com/css?family=Monserrat:400,700" );
 
 body {
 	padding: 0px;
 	margin: 0px;
 	
-	font-family: Roboto, Arial, sans-serif;
+	font-family: Monserrat, Arial, sans-serif;
 	font-size: 16px;
 }
 h1 {
@@ -30,7 +30,7 @@ header input,header button {
 	border-width: 0px;
 }
 input, button {
-	font-family: Roboto, Arial, sans-serif;
+	font-family: Monserrat, Arial, sans-serif;
 	font-size: 1.5em;
 }
 input:focus, button:focus {
@@ -75,7 +75,7 @@ header {
 	height: 480px;
 	
 	background-color: #000;
-	box-shadow: 0px 10px 20px rgba( 0, 0, 0, 0.5 );
+	box-shadow: 0px 10px 30px rgba( 0, 0, 0, 0.2 );
 }
 #video-url {
 	width: 800px;
