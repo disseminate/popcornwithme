@@ -14,6 +14,10 @@ h1 {
 h1.20-left {
 	margin-left: 20px;
 }
+a {
+	font-weight: bold;
+	color: #0FA2CC;
+}
 header h1 {
 	float: left;
 	
@@ -49,6 +53,7 @@ header {
 
 #container {
 	padding: 20px;
+	min-height: 100vh;
 }
 #room-entry {
 	margin: 10px 10px;
@@ -191,4 +196,29 @@ header {
 	background-color: #00B6FF;
 	color: #FFF;
 	box-shadow: 0px 10px 30px rgba( 0, 0, 0, 0.2 );
+}
+
+.wide {
+	box-shadow: 0px -10px 50px rgba( 0, 0, 0, 0.2 );
+	width: 100%;
+	background-color: #DDD;
+	text-align: center;
+	font-size: 1.2em;
+}
+.wide1 {
+	background-color: #00B6FF;
+	color: #D1F2FF;
+}
+.wide2 {
+	background-color: #D1F2FF;
+	color: #00B6FF;
+}
+.wide h1 {
+	padding: 30px;
+	padding-bottom: 0px;
+	font-size: 2.5em;
+}
+.wide p {
+	padding: 30px;
+	margin: 0px;
 }
