@@ -28,23 +28,9 @@ $( document ).ready( function() {
 	
 	function clearPlayerDiv() {
 		window.removeEventListener( 'message', onVimeoMessage, false );
-		if( playerService == 1 ) {
-			$( "#video-src" ).remove();
-			$( "#video" ).append( "<div id=\"video-src\"></div>" );
-			player = null;
-		} else if( playerService == 2 ) {
-			$( "#video-src" ).remove();
-			$( "#video" ).append( "<div id=\"video-src\"></div>" );
-			player = null;
-		} else if( playerService == 3 ) {
-			$( "#video-src" ).remove();
-			$( "#video" ).append( "<div id=\"video-src\"></div>" );
-			player = null;
-		} else if( playerService == 3 ) {
-			$( "#video-src" ).remove();
-			$( "#video" ).append( "<div id=\"video-src\"></div>" );
-			player = null;
-		}
+		$( "#video-src" ).remove();
+		$( "#video" ).append( "<div id=\"video-src\"></div>" );
+		player = null;
 	}
 	
 	socket.on( "stop-video", function( data ) {
@@ -199,12 +185,19 @@ $( document ).ready( function() {
 			} );
 		} else if( playerService == 3 ) {
 			$( "#video-src" ).remove();
-			$( "#video" ).append( "<iframe id='video-src' src='https://player.vimeo.com/video/" + playerURL + "/?api=1&player_id=video-src' width='848' height='480' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>" );
+			$( "#video" ).append( "<iframe id='video-src' src='https://player.vimeo.com/video/" + playerURL + "/?api=1&player_id=video-src' width='848' height='480' frameborder='0'></iframe>" );
 			player = $( "#video-src" );
-		} else if( playerService == 3 ) {
+		} else if( playerService == 4 ) {
 			$( "#video-src" ).remove();
-			$( "#video" ).append( "<iframe id='video-src' width='848' height='480' frameborder='0' scrolling='no' src='http://www.twitch.tv/" + playerURL + "/embed'></iframe>" );
+			$( "#video" ).append( "<iframe id='video-src' type='text/html' width='848' height='480' frameborder='0' scrolling='no' src='http://www.twitch.tv/" + playerURL + "/embed'>no</iframe>" );
+			/*$( "#video" ).append( "<object id='video-src' data='//www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf' height='480' type='application/x-shockwave-flash' width='848'></object>" );
+			$( "#video-src" ).append( "<param name='allowFullScreen' value='true'>" );
+			$( "#video-src" ).append( "<param name='allowNetworking' value='true'>" );
+			$( "#video-src" ).append( "<param name='allowScriptAccess' value='always'>" );
+			$( "#video-src" ).append( "<param name='movie' value='//www-cdn.jtvnw.net/swflibs/TwitchPlayer.swf'>" );
+			$( "#video-src" ).append( "<param name='flashvars' value='channel=" + playerURL + "&start_volume=25&auto_play=1'>" );
 			player = $( "#video-src" );
+			console.log( player );*/
 		}
 	} );
 	
