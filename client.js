@@ -92,7 +92,18 @@ $( document ).ready( function() {
 	
 	socket.on( "update-time", function( data ) {
 		serverTime = data;
-		if( playerService == 1 ) {
+		if( playerService == 0 ) {
+			if( player != null ) {
+				var diff = data - player.get(0).currentTime;
+				if( diff < 0 ) {
+					diff *= -1;
+				}
+				console.log( data + " - " + player.get(0).currentTime + " - " + diff );
+				if( diff > 2 ) {
+					player.get(0).currentTime = data;
+				}
+			}
+		} else if( playerService == 1 ) {
 			if( player != null && data < player.getDuration() ) {
 				var diff = data - player.getCurrentTime();
 				if( diff < 0 ) {
@@ -138,7 +149,15 @@ $( document ).ready( function() {
 		
 		console.log( "Changing video to \"" + playerURL + "\" [" + playerService + "]" );
 		
-		if( playerService == 1 ) {
+		if( playerService == 0 ) {
+			if( player == null ) {
+				$( "#video-src" ).remove();
+				$( "#video" ).append( "<video id=\"video-src\" width=\"848\" height=\"480\"><source src='" + playerURL + "' type='video/mp4'></video>" );
+				player = $( "#video-src" );
+				player.get(0).currentTime = playerTime;
+				player.get(0).play();
+			}
+		} else if( playerService == 1 ) {
 			if( player == null ) {
 				console.log( "New Player" );
 				player = new YT.Player( "video-src", {

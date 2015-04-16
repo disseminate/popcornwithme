@@ -38,7 +38,9 @@ setInterval( function() {
 }, 1000 );
 
 function getIdFromVideo( video, type ) {
-	if( type == 1 ) {
+	if( type == 0 ) {
+		return video;
+	} else if( type == 1 ) {
 		var id = video.split( "v=" )[1];
 		if( id != null ) {
 			var aP = id.indexOf( "&" );
