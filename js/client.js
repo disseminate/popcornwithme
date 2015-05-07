@@ -252,6 +252,10 @@ $( document ).ready( function() {
 		}
 	} );
 	
+	$( "#video-pause" ).click( function() {
+		socket.emit( "pause" );
+	} );
+	
 	$( "#chat-entry" ).keydown( function( ev ) {
 		if( ev.keyCode == 13 ) {
 			var a = $( this ).val();

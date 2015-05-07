@@ -99,6 +99,14 @@ header {
 	padding: 0px 10px;
 }
 
+#video-pause {
+	border-width: 0px;
+	padding: 0px 10px;
+	margin: 0px;
+	margin-top: 20px;
+	padding: 0px 10px;
+}
+
 #side-content {
 	min-width: 500px;
 }

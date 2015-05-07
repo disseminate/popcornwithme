@@ -32,10 +32,13 @@ http.listen( 80, function() {
 var playerURLs = { };
 var playerTimes = { };
 var playerServices = { };
+var playerPauses = { };
 
 setInterval( function() {
 	for( var i in playerTimes ) {
-		playerTimes[i]++;
+		if( !playerPauses[i] ) {
+			playerTimes[i]++;
+		}
 		io.to( i ).emit( "update-time", playerTimes[i] );
 	}
 }, 1000 );
@@ -177,6 +180,14 @@ io.on( "connection", function( socket ) {
 			for( var i = 0; i < socket.rooms.length; i++ ) {
 				socket.broadcast.to( socket.rooms[i] ).emit( "chat", [ socket.chatName, data ] );
 			}
+		}
+	} );
+	
+	socket.on( "pause", function( data ) {
+		if( playerPauses[socket.room] == null ) {
+			playerPauses[socket.room] = true;
+		} else {
+			playerPauses[socket.room] = null;
 		}
 	} );
 } );
