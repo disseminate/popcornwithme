@@ -7,16 +7,19 @@ app.get( "/", function( req, res ) {
 	res.sendFile( __dirname + "/index.htm" );
 } );
 app.get( "/style.css", function( req, res ) {
-	res.sendFile( __dirname + "/style.css" );
+	res.sendFile( __dirname + "/css/style.css" );
 } );
 app.get( "/client.js", function( req, res ) {
-	res.sendFile( __dirname + "/client.js" );
+	res.sendFile( __dirname + "/js/client.js" );
+} );
+app.get( "/media/notify.mp3", function( req, res ) {
+	res.sendFile( __dirname + "/media/notify.mp3" );
 } );
 app.get( "/*/style.css", function( req, res ) {
-	res.sendFile( __dirname + "/style.css" );
+	res.sendFile( __dirname + "/css/style.css" );
 } );
 app.get( "/*/client.js", function( req, res ) {
-	res.sendFile( __dirname + "/client.js" );
+	res.sendFile( __dirname + "/js/client.js" );
 } );
 app.get( "/*", function( req, res ) {
 	res.sendFile( __dirname + "/index.htm" );

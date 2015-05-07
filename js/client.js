@@ -13,6 +13,8 @@ var serverTime;
 
 var timeCounter;
 
+var notify = new Audio( "media/notify.mp3" );
+
 $( document ).ready( function() {
 	var s = parent.location.hash;
 	if( s ) {
@@ -38,6 +40,7 @@ $( document ).ready( function() {
 	socket.on( "chat", function( data ) {
 		$( "#chat-list" ).append( $( "<li>" ).append( $( "<b>" ).text( data[0] ), ": ", $( "<span />" ).text( data[1] ) ) );
 		$( "#chat" ).scrollTop( $( "#chat" ).prop( "scrollHeight" ) );
+		notify.play();
 	} );
 	
 	socket.on( "chat-users", function( data ) {
@@ -257,6 +260,7 @@ $( document ).ready( function() {
 				$( "#chat-list" ).append( $( "<li>" ).append( $( "<b>" ).text( user ), ": ", $( "<span />" ).text( a ) ) );
 				$( this ).val( "" );
 				$( "#chat" ).scrollTop( $( "#chat" ).prop( "scrollHeight" ) );
+				notify.play();
 			}
 		}
 	} );
