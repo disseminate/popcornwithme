@@ -14,11 +14,9 @@ var serverTime;
 var timeCounter;
 
 $( document ).ready( function() {
-	var s = document.URL.split( "/" );
-	if( s.length >= 3 ) {
-		if( s[3].length > 0 ) {
-			room = s[3];
-		}
+	var s = parent.location.hash;
+	if( s ) {
+		room = s.replace( "#", "" );
 	}
 	
 	socket.emit( "change-room", room );
@@ -231,6 +229,8 @@ $( document ).ready( function() {
 		$( "#room-name" ).text( room );
 		$( "#chat-list" ).empty();
 		$( "#chat-users-list" ).empty();
+		
+		parent.location.hash = room;
 		
 		ev.preventDefault();
 	} );
