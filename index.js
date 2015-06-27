@@ -101,17 +101,31 @@ io.on( "connection", function( socket ) {
 	
 	console.log( ( socket.chatName + " connected." ).yellow );
 	
-	function getClientsInMyRoom() {
-		return getClientsInRoom( socket.rooms[0] );
+	socket.on( "disconnect", function() {
+		for( var i = 0; i < socket.rooms.length; i++ ) {
+			io.to( socket.rooms[i] ).emit( "disconnect", socket.chatName );
+			updateUsers( socket.rooms[i] );
+		}
+	} );
+	
+	for( var i = 0; i < socket.rooms.length; i++ ) {
+		io.to( socket.rooms[i] ).emit( "connection", socket.chatName );
+		updateUsers( socket.rooms[i] );
 	}
 	
-	function updateUsers() { // Update all users in my current room
-		var users = getClientsInMyRoom();
+	function updateUsers( room ) { // Update all users in my current room
+		var users = getClientsInRoom( room );
 		io.to( socket.room ).emit( "chat-users", users );
 	}
 	
 	socket.on( "request-users", function( data ) {
-		updateUsers();
+		for( var i = 0; i < socket.rooms.length; i++ ) {
+			updateUsers( socket.rooms[i] );
+		}
+	} );
+	
+	socket.on( "request-whoami", function( data ) {
+		socket.emit( "whoami", socket.chatName );
 	} );
 	
 	socket.on( "change-room", function( data ) {
@@ -155,9 +169,14 @@ io.on( "connection", function( socket ) {
 	socket.on( "change-user", function( data ) {
 		if( data.length > 0 ) {
 			console.log( socket.chatName.red + " changed their name to " + data.red + "." );
+			for( var i = 0; i < socket.rooms.length; i++ ) {
+				io.to( socket.rooms[i] ).emit( "change-name", [ socket.chatName, data ] );
+			}
 			socket.chatName = data;
+			for( var i = 0; i < socket.rooms.length; i++ ) {
+				updateUsers( socket.rooms[i] );
+			}
 		}
-		updateUsers();
 	} );
 	
 	socket.on( "chat", function( data ) {

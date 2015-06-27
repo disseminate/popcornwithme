@@ -35,9 +35,8 @@ $( document ).ready( function() {
 	}
 	
 	socket.emit( "change-room", room );
-	socket.emit( "change-user", user );
-	
 	socket.emit( "request-users" );
+	socket.emit( "request-whoami" );
 	
 	function clearPlayerDiv() {
 		window.removeEventListener( 'message', onVimeoMessage, false );
@@ -145,8 +144,42 @@ $( document ).ready( function() {
 		}
 	} );
 	
+	socket.on( "whoami", function( data ) {
+		user = data;
+		$( "#chat-name" ).val( user );
+	} );
+	
 	socket.on( "request-users", function( data ) {
 		socket.emit( "request-users" );
+	} );
+	
+	socket.on( "change-name", function( data ) {
+		var msgElement = $( "<li>" );
+		
+		msgElement.append( $( "<b>" ).text( data[0] ) );
+		msgElement.append( " has changed their name to " );
+		msgElement.append( $( "<b>" ).text( data[1] ) );
+		msgElement.append( "." );
+		
+		$( "#chat-list" ).append( msgElement );
+	} );
+	
+	socket.on( "connection", function( data ) {
+		var msgElement = $( "<li>" );
+		
+		msgElement.append( $( "<b>" ).text( data[0] ) );
+		msgElement.append( " has connected." );
+		
+		$( "#chat-list" ).append( msgElement );
+	} );
+	
+	socket.on( "disconnect", function( data ) {
+		var msgElement = $( "<li>" );
+		
+		msgElement.append( $( "<b>" ).text( data ) );
+		msgElement.append( " has disconnected." );
+		
+		$( "#chat-list" ).append( msgElement );
 	} );
 	
 	function vimeoPost( action, value ) {
@@ -360,11 +393,6 @@ $( document ).ready( function() {
 				$( this ).val( "" );
 			}
 		}
-	} );
-	
-	$( "#chat-entry" ).width( $( "#chat" ).width() + 40 );
-	$( window ).resize( function() {
-		$( "#chat-entry" ).width( $( "#chat" ).width() + 40 );
 	} );
 	
 	$( "#chat-name" ).keydown( function( ev ) {

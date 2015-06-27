@@ -13,50 +13,39 @@
 <header>
 	<h1>popcornwith.me</h1>
 	<form action="" id="room-entry">
-		<button id="room-entry-submit">Enter</button>
+		<button id="room-entry-submit">Enter Room</button>
 		<input id="room-entry-entry" />
 	</form>
 </header>
 <div id="container">
-	<div id="content-container">
-		<div id="video-column">
-			<h1 id="room-name"></h1>
-			<div id="video"><div id="video-src"></div></div>
-			<input id="video-url" />
-			<button id="video-url-submit" />Go</button>
-			<button id="video-pause" />Play/Pause</button>
+	<div id="video-column">
+		<h1 id="room-name"></h1>
+		<div id="video"><div id="video-src"></div></div>
+		<input id="video-url" />
+		<button id="video-url-submit" />Go</button>
+	</div>
+	<div id="chat-column">
+		<h1 class="20-left">Chat</h1>
+		<div id="chat">
+			<ul id="chat-list" class="ul-no-format">
+				
+			</ul>
 		</div>
-		<div id="side-content">
-			<div id="users-column">
-				<h1 class="20-left">Users</h1>
-				<div id="users">
-					<ul id="chat-users-list" class="noFormat">
-						
-					</ul>
-				</div>
-				<input id="chat-name" /><br>
-				<button id="chat-name-submit">Change Name</button>
-			</div>
-			<div id="chat-column">
-				<h1 class="20-left">Chat</h1>
-				<div id="chat">
-					<ul id="chat-list" class="noFormat">
-						
-					</ul>
-				</div>
-				<input id="chat-entry" />
-			</div>
+		<input id="chat-entry" />
+	</div>
+	<div id="users-column">
+		<h1 class="20-left">Users</h1>
+		<div id="users-box">
+			<ul id="chat-users-list" class="ul-no-format">
+				
+			</ul>
 		</div>
+		<input id="chat-name" /><br>
+		<button id="chat-name-submit">Change Name</button>
 	</div>
 </div>
 <footer>
-	<div class="wide wide1">
-		<h1>What is this?</h1>
-		<p>popcornwith.me is a website where you can watch videos and listen to music with other people simultaneously.</p>
-	</div>
-	<div class="wide wide2">
-		<p>&#169; 2015 <a href="http://kylewindsor.io" target="_blank">Kyle Windsor</a>.
-	</div>
+	<p>&#169; 2015 <a href="http://kylewindsor.io" target="_blank">Kyle Windsor</a>.
 </footer>
 </body>
 </html>

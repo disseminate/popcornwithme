@@ -5,7 +5,7 @@ body {
 	margin: 0px;
 	
 	font-family: Montserrat, Arial, sans-serif;
-	font-size: 16px;
+	font-size: 14px;
 }
 h1 {
 	padding: 0px;
@@ -20,8 +20,7 @@ a {
 }
 header h1 {
 	float: left;
-	
-	font-size: 3.0em;
+	font-size: 4.0em;
 }
 header input,header button {
 	float: right;
@@ -53,22 +52,22 @@ header {
 
 #container {
 	padding: 20px;
-	min-height: 100vh;
+	width: 95%;
+	margin: 0 auto;
+	vertical-align: top;
 }
 #room-entry {
 	margin: 10px 10px;
 }
 
-#content-container {
-	width: 100%;
-	vertical-align: text-top;
-}
+/* VIDEO */
 
 #video-column {
 	width: 848px;
-	float: left;
 	padding-bottom: 20px;
 	margin-right: 20px;
+	display: inline-block;
+	vertical-align: top;
 }
 #video {
 	width: 848px;
@@ -78,7 +77,7 @@ header {
 	box-shadow: 0px 10px 30px rgba( 0, 0, 0, 0.2 );
 }
 #video-url {
-	width: 800px;
+	width: 778px;
 	height: 30px;
 	border-width: 0px;
 	padding: 0px;
@@ -89,8 +88,8 @@ header {
 	color: #FFF;
 }
 #video-url-submit {
-	width: 48px;
 	height: 30px;
+	width: 70px;
 	border-width: 0px;
 	padding: 0px 10px;
 	margin: 0px;
@@ -99,42 +98,26 @@ header {
 	padding: 0px 10px;
 }
 
-#video-pause {
-	border-width: 0px;
-	padding: 0px 10px;
-	margin: 0px;
-	margin-top: 20px;
-	padding: 0px 10px;
-}
-
-#side-content {
-	min-width: 500px;
-}
+/* USERS */
 
 #users-column {
-	width: 200px;
-	float: left;
-}
-#users {
-	height: 440px;
-	max-height: 440px;
-	
-	overflow: auto;
-	
-	padding: 20px;
+	width: 15%;
+	display: inline-block;
+	vertical-align: top;
 	margin-right: 20px;
-	
+}
+#users-box {
+	overflow: auto;
+	padding: 10px;
 	background-color: #EEE;
 }
 #chat-name {
-	width: 180px;
-	min-width: 180px;
 	height: 20px;
 	border-width: 0px;
 	padding: 0px;
 	margin: 0px;
 	margin-top: 20px;
-	margin-right: 20px;
+	width: 100%;
 	
 	font-size: 1.0em;
 	
@@ -142,91 +125,78 @@ header {
 	color: #FFF;
 }
 #chat-name-submit {
-	width: 180px;
 	height: 20px;
+	width: 100%;
 	border-width: 0px;
 	padding: 0px;
 	margin: 0px;
-	margin-right: 20px;
 	padding: 0px 10px;
 	font-size: 1.0em;
 }
 #chat-users {
 	height: 440px;
 	max-height: 440px;
-	width: 200px;
-	max-width: 200px;
 	margin-top: 20px;
-	margin-left: 20px;
 	
 	overflow: auto;
 	
-	padding: 20px;
+	padding: 0px 10px;
 	
 	background-color: #EEE;
 }
 
+/* CHAT */
+
 #chat-column {
-	width: auto;
-	min-width: 200px;
-	overflow: hidden;
+	width: 30%;
+	display: inline-block;
+	margin-right: 20px;
 }
 #chat {
-	height: 440px;
-	max-height: 440px;
-	width: auto;
-	min-width: 200px;
-	
+	width: 100%;
+	height: 300px;
+	min-height: 300px;
 	overflow: auto;
-	
-	padding: 20px;
-	
 	background-color: #EEE;
 }
-.noFormat {
+.ul-no-format {
 	list-style-type: none;
 	padding: 0px;
 	margin: 0px;
-	line-height: 20px;
+	line-height: 16px;
+	padding: 10px;
 }
 #chat-list li {
 	margin-bottom: 10px;
 }
 #chat-entry {
-	width: auto;
-	min-width: 200px;
 	height: 30px;
+	width: 100%;
 	border-width: 0px;
 	padding: 0px;
 	margin: 0px;
-	margin-right: 20px;
 	
 	background-color: #00B6FF;
 	color: #FFF;
 	box-shadow: 0px 10px 30px rgba( 0, 0, 0, 0.2 );
 }
 
-.wide {
-	box-shadow: 0px -10px 50px rgba( 0, 0, 0, 0.2 );
+/* FOOTER */
+
+footer {
 	width: 100%;
 	background-color: #DDD;
 	text-align: center;
 	font-size: 1.2em;
-}
-.wide1 {
-	background-color: #00B6FF;
-	color: #D1F2FF;
-}
-.wide2 {
 	background-color: #D1F2FF;
 	color: #00B6FF;
 }
-.wide h1 {
+footer h1 {
 	padding: 30px;
 	padding-bottom: 0px;
-	font-size: 2.5em;
+	font-size: 2.5em; 
 }
-.wide p {
+footer p {
 	padding: 30px;
 	margin: 0px;
 }
