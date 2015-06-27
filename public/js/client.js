@@ -13,7 +13,20 @@ var serverTime;
 
 var timeCounter;
 
-var notify = new Audio( "media/notify.mp3" );
+var entityMap = {
+	"&": "&amp;",
+	"<": "&lt;",
+	">": "&gt;",
+	'"': '&quot;',
+	"'": '&#39;',
+	"/": '&#x2F;'
+};
+
+function escapeHTML( text ) {
+	return String( text ).replace( /[&<>"'\/]/g, function( s ) {
+		return entityMap[s];
+	} );
+}
 
 $( document ).ready( function() {
 	var s = parent.location.hash;
@@ -37,10 +50,92 @@ $( document ).ready( function() {
 		clearPlayerDiv();
 	} );
 	
-	socket.on( "chat", function( data ) {
-		$( "#chat-list" ).append( $( "<li>" ).append( $( "<b>" ).text( data[0] ), ": ", $( "<span />" ).text( data[1] ) ) );
+	var chatEmotes = [
+		{
+			text: "<3",
+			icon: "images/icons/heart.png",
+			alt: "Heart"
+		},
+		{
+			text: ":D",
+			icon: "images/icons/emoticon_grin.png",
+			alt: "Grin"
+		},
+		{
+			text: ":3",
+			icon: "images/icons/emoticon_waii.png",
+			alt: "Kit"
+		},
+		{
+			text: "(y)",
+			icon: "images/icons/thumb_up.png",
+			alt: "Thumb Up"
+		},
+		{
+			text: "(n)",
+			icon: "images/icons/thumb_down.png",
+			alt: "Thumb Down"
+		},
+		{
+			text: ":P",
+			icon: "images/icons/emoticon_tongue.png",
+			alt: "Tongue"
+		},
+		{
+			text: ";)",
+			icon: "images/icons/emoticon_wink.png",
+			alt: "Wink"
+		},
+		{
+			text: ":(",
+			icon: "images/icons/emoticon_unhappy.png",
+			alt: "Unhappy"
+		},
+		{
+			text: ":)",
+			icon: "images/icons/emoticon_smile.png",
+			alt: "Smile"
+		},
+		{
+			text: "^_^",
+			icon: "images/icons/emoticon_happy.png",
+			alt: "Happy"
+		},
+		{
+			text: ">:D",
+			icon: "images/icons/emoticon_evilgrin.png",
+			alt: "Evil Grin"
+		},
+		{
+			text: ":O",
+			icon: "images/icons/emoticon_surprised.png",
+			alt: "Surprised"
+		}
+	];
+	
+	
+	function addChat( user, msg ) {
+		var msgElement = $( "<li>" );
+		msgElement.append( $( "<b>" ).text( user ) );
+		msgElement.append( ": " );
+		
+		msg = escapeHTML( msg );
+		
+		for( var i = 0; i < chatEmotes.length; i++ ) {
+			msg = msg.split( escapeHTML( chatEmotes[i].text ) ).join( "<img src='" + chatEmotes[i].icon + "' alt='" + chatEmotes[i].alt + "'>" );
+		}
+		console.log( msg );
+		msgElement.append( msg );
+		
+		$( "#chat-list" ).append( msgElement );
 		$( "#chat" ).scrollTop( $( "#chat" ).prop( "scrollHeight" ) );
-		notify.play();
+	}
+	
+	socket.on( "chat", function( data ) {
+		var user = data[0];
+		var msg = data[1];
+		
+		addChat( user, msg );
 	} );
 	
 	socket.on( "chat-users", function( data ) {
@@ -261,10 +356,8 @@ $( document ).ready( function() {
 			var a = $( this ).val();
 			if( a.length > 0 ) {
 				socket.emit( "chat", a );
-				$( "#chat-list" ).append( $( "<li>" ).append( $( "<b>" ).text( user ), ": ", $( "<span />" ).text( a ) ) );
+				addChat( user, a );
 				$( this ).val( "" );
-				$( "#chat" ).scrollTop( $( "#chat" ).prop( "scrollHeight" ) );
-				notify.play();
 			}
 		}
 	} );

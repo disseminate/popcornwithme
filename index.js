@@ -1,31 +1,17 @@
-var app = require( "express" )();
-var http = require( "http" ).Server( app );
-var io = require( "socket.io" )( http );
+var express = require( "express" );
+var app = express();
+
+app.use( express.static( __dirname + "/public" ) );
+
+var server = require( "http" ).Server( app );
+var io = require( "socket.io" ).listen( server );
 var colors = require( "colors" );
 
 app.get( "/", function( req, res ) {
-	res.sendFile( __dirname + "/index.htm" );
-} );
-app.get( "/style.css", function( req, res ) {
-	res.sendFile( __dirname + "/css/style.css" );
-} );
-app.get( "/client.js", function( req, res ) {
-	res.sendFile( __dirname + "/js/client.js" );
-} );
-app.get( "/media/notify.mp3", function( req, res ) {
-	res.sendFile( __dirname + "/media/notify.mp3" );
-} );
-app.get( "/*/style.css", function( req, res ) {
-	res.sendFile( __dirname + "/css/style.css" );
-} );
-app.get( "/*/client.js", function( req, res ) {
-	res.sendFile( __dirname + "/js/client.js" );
-} );
-app.get( "/*", function( req, res ) {
-	res.sendFile( __dirname + "/index.htm" );
+	res.sendFile( __dirname + "/public/index.htm" );
 } );
 
-http.listen( 80, function() {
+server.listen( 80, function() {
 	console.log( "popcornwith.me initialized.".green.bold );
 } );
 
